@@ -1,7 +1,17 @@
 .ship {
     position: absolute;
-    top: 45%;
-    height: 50px;
-    width: 50px;
-    background-color: gray;
+    top: 50%;
+    background-color: transparent;
+    
+    .half-ship {
+        height: 0px;
+        width: 0px;
+        border-bottom: 30px solid @shipLightColour;
+        border-right: 100px solid transparent;
+        
+        &.inverted {
+            transform: rotate(180deg) scaleX(-1);
+            border-bottom-color: @shipDarkColour;
+        }
+    }
 }
