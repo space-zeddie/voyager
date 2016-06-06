@@ -20,7 +20,7 @@ module.exports = function(grunt) {
             //Збірка з назвою піца
             behaviour: {
                 src:        'Frontend/src/main.js',
-                dest:       'Frontend/www/js/main.js'
+                dest:       'Frontend/www/assets/js/main.js'
             }
         }
     };
