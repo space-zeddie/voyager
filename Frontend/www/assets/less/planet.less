@@ -13,6 +13,22 @@
             border-radius: @planetDMedium - 50px;
         }
     }
+    &.large {
+        width: @planetDLarge;
+        height: @planetDLarge;
+        
+        .gravity-field {
+            border-radius: @planetDLarge - 50px;
+        }
+    }
+    &.small {
+        width: @planetDSmall;
+        height: @planetDSmall;
+        
+        .gravity-field {
+            border-radius: @planetDSmall - 50px;
+        }
+    }
     
     .gravity-field {
         width: 100%;
@@ -20,14 +36,34 @@
         border: 2px dashed white;
         
         .planet-surface {
-            height: @planetRegular;
-            width: @planetRegular;
             border-radius: 50%;
-            background-color: @planetRed;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            
+            &.regular {
+                height: @planetRegular;
+                width: @planetRegular;                
+            }
+            &.dwarf {
+                height: @planetDwarf;
+                width: @planetDwarf;                
+            }
+            &.giant {
+                height: @planetGiant;
+                width: @planetGiant;                
+            }
+            
+            &.red {                
+                background-color: @planetRed;
+            }
+            &.blue {                
+                background-color: @planetBlue;
+            }
+            &.cornsilk {                
+                background-color: @planetCornsilk;
+            }
         }
     }
     
