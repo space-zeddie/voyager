@@ -4,7 +4,7 @@ var canvas = null;
 var animFrame = null;
 
 function init(canvas, animFrame) {
-    
+    generator.generatePlanet();
 }
 
 exports.init = init;
