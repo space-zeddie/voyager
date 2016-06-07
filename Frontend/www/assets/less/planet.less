@@ -1,0 +1,35 @@
+.planet {    
+    background-color: transparent;
+    position: absolute;
+    top: -10px;
+    left: 100px;
+    padding: 0;
+    
+    &.medium {
+        width: @planetDMedium;
+        height: @planetDMedium;
+        
+        .gravity-field {
+            border-radius: @planetDMedium - 50px;
+        }
+    }
+    
+    .gravity-field {
+        width: 100%;
+        height: 100%;
+        border: 2px dashed white;
+        
+        .planet-surface {
+            height: @planetRegular;
+            width: @planetRegular;
+            border-radius: 50%;
+            background-color: @planetRed;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    }
+    
+    
+}
