@@ -19,4 +19,20 @@
             border-bottom-color: @shipDarkColour;
         }
     }
+    
+    .exhaust {
+        display: inline-block;
+        position: absolute;
+        height: 0px;
+        border-top: 2px dotted yellow;
+        width: 50px;
+        left: -55px;
+        
+        &.top {
+            top: 10px;
+        }        
+        &.bottom {
+            bottom: 10px;            
+        }
+    }
 }
