@@ -31,30 +31,32 @@ function generatePlanet() {
 
 exports.generatePlanet = generatePlanet;
 },{"./planet":3}],3:[function(require,module,exports){
-var $planet = null;
-var radiusField = 0;
-var radiusPlanet = 0;
-var centerX = 0;
-var centerY = 0;
+var planet = {
+    $planet: null,
+    radiusField: 0,
+    radiusPlanet: 0,
+    centerX: 0,
+    centerY: 0
+};
 
 function overlapsField(x, y) {
-    var val = (x - centerX) * (x - centerX) + (y - centerY) * (y - centerY);
-    return val <= radiusField * radiusField;
+    var val = (x - planet.centerX) * (x - planet.centerX) + (y - planet.centerY) * (y - planet.centerY);
+    return val <= planet.radiusField * planet.radiusField;
 }
 
 function collides(x, y) {
-    var val = (x - centerX) * (x - centerX) + (y - centerY) * (y - centerY);
-    return val <= radiusPlanet * radiusPlanet;
+    var val = (x - planet.centerX) * (x - planet.centerX) + (y - planet.centerY) * (y - planet.centerY);
+    return val <= planet.radiusPlanet * planet.radiusPlanet;
 }
 
 function init($elem) {
-    $planet = $elem;
-    var $gravity = $planet.find('.gravity-field');
-    radiusField = $planet.find('.gravity-field').width() / 2;
-    radiusPlanet = $planet.find('.planet-surface').width() / 2;
+    planet.$planet = $elem;
+    var $gravity = planet.$planet.find('.gravity-field');
+    planet.radiusField = planet.$planet.find('.gravity-field').width() / 2;
+    planet.radiusPlanet = planet.$planet.find('.planet-surface').width() / 2;
 
-    centerX = $gravity.offset().left + $gravity.width() / 2;
-    centerY = $gravity.offset().top + $gravity.height() / 2;
+    planet.centerX = $gravity.offset().left + $gravity.width() / 2;
+    planet.centerY = $gravity.offset().top + $gravity.height() / 2;
     
    /* $planet.click(function (e) {
         var x = e.pageX;
