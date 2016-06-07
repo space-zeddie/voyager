@@ -24,7 +24,13 @@
         display: inline-block;
         position: absolute;
         height: 0px;
-        border-top: 2px dotted yellow;
+        border-top-width: 2px;
+        border-top-style: dotted; 
+        border-image: linear-gradient(yellow, red);        
+        -moz-border-image: -moz-linear-gradient(left, yellow, red);
+        -webkit-border-image: -webkit-linear-gradient(left, yellow, red);
+        -o-border-image: -o-linear-gradient(left, yellow, red);
+        -ms-border-image: -ms-linear-gradient(left, yellow, red);
         width: 50px;
         left: -55px;
         
