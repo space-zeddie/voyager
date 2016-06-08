@@ -10,7 +10,7 @@ var $planets = $('.planets');
 function planetOverlap(planet1, planet2) {
     var lim = planet1.radiusPlanet + planet2.radiusPlanet + Math.max(planet1.radiusField, planet2.radiusField) - OFFSET;
     var dist = Math.sqrt( Math.pow(planet1.centerX - planet2.centerX, 2) + Math.pow(planet1.centerY - planet2.centerY, 2) );
-    return dist <= lim;
+    return dist < lim;
 }
 
 function randomPlanetDiv() {
@@ -28,10 +28,31 @@ function randomPlanetDiv() {
     $elem.find('.planet-surface').addClass(planetColour);
     
     // TEST
-    $elem.css('left', '+=200px');
+    /*$elem.css('left', '+=200px');
     planets.push(createPlanet($elem));
-    alert($elem.html());
-    $planets.append($elem);
+    $planets.append($elem);*/
+    return $elem;
+}
+
+function randomPlanet(x, y) {
+    var $elem = randomPlanetDiv();
+    $elem.css('left', '+=' + x + 'px');
+    $elem.css('top', '+=' + y + 'px');
+    var planet = createPlanet($elem);
+    var success = true;
+    
+    planets.forEach(function(p) {
+        if (planetOverlap(p, planet)) {
+            success = false;
+            return;
+        }
+    });
+    
+    if (success) {
+        planets.push(planet);
+        $planets.append($elem);
+    }
+    return success;
 }
 
 function createPlanet($elem) {
@@ -70,4 +91,4 @@ function allPlanets() {
 
 exports.init = init;
 exports.allPlanets = allPlanets;
-exports.randomPlanet = randomPlanetDiv;
+exports.randomPlanet = randomPlanet;
