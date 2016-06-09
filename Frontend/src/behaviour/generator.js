@@ -9,7 +9,6 @@ function generatePlanet() {
     while (!planets.randomPlanet(x, y)) {
         x = Math.random() * $(document).innerWidth();
         y = Math.random() * $(document).innerHeight();
-        console.log(x + ', ' + y);
     }
 }
 

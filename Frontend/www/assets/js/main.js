@@ -34,7 +34,6 @@ function generatePlanet() {
     while (!planets.randomPlanet(x, y)) {
         x = Math.random() * $(document).innerWidth();
         y = Math.random() * $(document).innerHeight();
-        console.log(x + ', ' + y);
     }
 }
 
@@ -49,10 +48,25 @@ var planetColours = ['red', 'blue', 'cornsilk'];
 var PLANET_TEMPLATE = '<div class="planet"><div class="gravity-field"><div class="planet-surface"></div></div></div>';
 var $planets = $('.planets');
 
-function planetOverlap(planet1, planet2) {
-    var lim = planet1.radiusPlanet + planet2.radiusPlanet + Math.max(planet1.radiusField, planet2.radiusField) - OFFSET;
-    var dist = Math.sqrt( Math.pow(planet1.centerX - planet2.centerX, 2) + Math.pow(planet1.centerY - planet2.centerY, 2) );
-    return dist < lim;
+function getPositions($box) {
+    var pos = $box.position();
+    var width = $box.width();
+    var height = $box.height();
+    return [ [ pos.left, pos.left + width ], [ pos.top, pos.top + height ] ];
+}
+        
+function comparePositions(p1, p2) {
+    var x1 = p1[0] < p2[0] ? p1 : p2;
+    var x2 = p1[0] < p2[0] ? p2 : p1;
+    return x1[1] > x2[0] || x1[0] === x2[0];
+}
+
+function collision($div1, $div2) {
+    var pos = getPositions($div1);
+    var pos2 = getPositions($div2);
+    var horizontalMatch = comparePositions(pos[0], pos2[0]);
+    var verticalMatch = comparePositions(pos[1], pos2[1]);       
+    return horizontalMatch && verticalMatch;
 }
 
 function randomPlanetDiv() {
@@ -77,14 +91,17 @@ function randomPlanetDiv() {
 }
 
 function randomPlanet(x, y) {
+    console.log(x + ', ' + y);
     var $elem = randomPlanetDiv();
-    $elem.css('left', '+=' + x + 'px');
-    $elem.css('top', '+=' + y + 'px');
+    $elem.css('left', x + 'px');
+    $elem.css('top', y + 'px');
     var planet = createPlanet($elem);
     var success = true;
     
-    planets.forEach(function(p) {
-        if (planetOverlap(p, planet)) {
+    
+    $planets.children().each(function() {
+       // p.toggle();
+        if (collision($(this), $elem)) {
             success = false;
             return;
         }
@@ -93,6 +110,7 @@ function randomPlanet(x, y) {
     if (success) {
         planets.push(planet);
         $planets.append($elem);
+     //   planetOverlap(planet);
     }
     return success;
 }
@@ -135,11 +153,11 @@ exports.init = init;
 exports.allPlanets = allPlanets;
 exports.randomPlanet = randomPlanet;
 },{}],4:[function(require,module,exports){
-function al() {
-    //alert('hi');
+function init() {
+    var $ship = $('.ship');
 }
 
-exports.al = al;
+exports.init = init;
 },{}],5:[function(require,module,exports){
 $(function() {
     var game = require('./behaviour/game');

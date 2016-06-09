@@ -1,5 +1,5 @@
-function al() {
-    //alert('hi');
+function init() {
+    var $ship = $('.ship');
 }
 
-exports.al = al;
+exports.init = init;
