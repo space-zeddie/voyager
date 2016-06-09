@@ -13,16 +13,24 @@ function getPositions($box) {
     var height = $box.height();
     return [ [ pos.left, pos.left + width ], [ pos.top, pos.top + height ] ];
 }
+
+function position($item, radius) {
+    var pos = $item.offset();
+    var width = $box.width();
+    var height = $box.height();
+    return [ [ pos.left, pos.left + width ], [ pos.top, pos.top + height ] ];
+}
         
 function comparePositions(p1, p2) {
+   // alert(p1 + '; ' + p2);
     var x1 = p1[0] < p2[0] ? p1 : p2;
     var x2 = p1[0] < p2[0] ? p2 : p1;
     return x1[1] > x2[0] || x1[0] === x2[0];
 }
 
 function collision($div1, $div2) {
-    var pos = getPositions($div1);
-    var pos2 = getPositions($div2);
+    var pos = position($div1);
+    var pos2 = position($div2);
     var horizontalMatch = comparePositions(pos[0], pos2[0]);
     var verticalMatch = comparePositions(pos[1], pos2[1]);       
     return horizontalMatch && verticalMatch;
@@ -54,23 +62,31 @@ function randomPlanet(x, y) {
     var $elem = randomPlanetDiv();
     $elem.css('left', x + 'px');
     $elem.css('top', y + 'px');
+    //$elem.addClass('new');
     var planet = createPlanet($elem);
     var success = true;
     
+    //alert('elem: ' + JSON.stringify($elem.position()) + ', ' + $elem.width());
     
+    $planets.append($elem);
     $planets.children().each(function() {
        // p.toggle();
-        if (collision($(this), $elem)) {
-            success = false;
-            return;
+        while (collision($(this), $elem)) {
+            alert('collision!');
+            x = Math.random() * $(document).innerWidth();
+            y = Math.random() * $(document).innerHeight();
+            $elem.css('left', x + 'px');
+            $elem.css('top', y + 'px');
         }
     });
     
-    if (success) {
+   // if (success) {
         planets.push(planet);
-        $planets.append($elem);
+       // $planets.append($elem);
+       // $elem.removeClass('new');
      //   planetOverlap(planet);
-    }
+   // } else 
+      //  $planets.remove('.new');
     return success;
 }
 
