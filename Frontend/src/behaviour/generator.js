@@ -5,6 +5,7 @@ function generatePlanet() {
     
     var x = Math.random() * $(document).innerWidth();
     var y = Math.random() * $(document).innerHeight();
+    //alert('width: ' + $(document).innerWidth() + '; height: ' + $(document).innerHeight());
     
     planets.randomPlanet(x, y);
 }

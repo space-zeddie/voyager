@@ -6,12 +6,22 @@ var animFrame = null;
 function init(canvas, animFrame) {
     generator.generatePlanet();
     var $shuttle = $('.ship'), degree = 0, timer;
+    var $planets = $('.planets').find('.planet'), planetsTimer;
+    var vx = 2;
+    var vy = 0;
     
     function rotate() {        
         $shuttle.css({ WebkitTransform: 'rotate(' + degree + 'deg)'});  
-        $shuttle.css({ '-moz-transform': 'rotate(' + degree + 'deg)'});                    
-    }
+        $shuttle.css({ '-moz-transform': 'rotate(' + degree + 'deg)'});
+        vy = degree;
+    }    
     
+    function movePlanets() {
+        $planets.animate({
+            'left': '+=' + vx + 'px',
+            'top': '+=' + vy + 'px'
+        });
+    }
     
     $(document).keydown(function (e) {
         if (e.which === 39 || e.which === 68) {
@@ -21,6 +31,7 @@ function init(canvas, animFrame) {
             clearTimeout(timer);
             timer = setTimeout(function() {
                 degree += 2; rotate();
+                movePlanets();
             }, 5);
             rotate();
         }
@@ -31,6 +42,7 @@ function init(canvas, animFrame) {
             clearTimeout(timer);
             timer = setTimeout(function() {
                 degree -= 2; rotate();
+                movePlanets();
             }, 5);
             rotate();
         }
