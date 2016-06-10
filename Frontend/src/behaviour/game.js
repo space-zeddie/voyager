@@ -5,18 +5,46 @@ var animFrame = null;
 
 function init(canvas, animFrame) {
     generator.generatePlanet();
+    var $shuttle = $('.ship'), degree = 0, timer;
+    
+    function rotate() {        
+        $shuttle.css({ WebkitTransform: 'rotate(' + degree + 'deg)'});  
+        $shuttle.css({ '-moz-transform': 'rotate(' + degree + 'deg)'});                    
+    }
+    
     
     $(document).keydown(function (e) {
         if (e.which === 39 || e.which === 68) {
-            $('.planets').find('.planet').animate({
+           /* $('.planets').find('.planet').animate({
                 'left': '+=10px'
-            });
+            });*/
+            clearTimeout(timer);
+            timer = setTimeout(function() {
+                degree += 2; rotate();
+            }, 5);
+            rotate();
         }
         else if (e.which === 37 || e.which === 65) {
-            $('.planets').find('.planet').animate({
+           /* $('.planets').find('.planet').animate({
                 'left': '-=10px'
-            });
+            });*/
+            clearTimeout(timer);
+            timer = setTimeout(function() {
+                degree -= 2; rotate();
+            }, 5);
+            rotate();
         }
+    });
+    
+    $(document).keyup(function (e) {
+        clearTimeout(timer);
+    });
+    
+    
+    $(document).click(function() {
+        clearTimeout(timer);
+    }, function() {
+       rotate();
     });
 }
 

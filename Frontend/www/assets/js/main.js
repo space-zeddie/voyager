@@ -6,18 +6,46 @@ var animFrame = null;
 
 function init(canvas, animFrame) {
     generator.generatePlanet();
+    var $shuttle = $('.ship'), degree = 0, timer;
+    
+    function rotate() {        
+        $shuttle.css({ WebkitTransform: 'rotate(' + degree + 'deg)'});  
+        $shuttle.css({ '-moz-transform': 'rotate(' + degree + 'deg)'});                    
+    }
+    
     
     $(document).keydown(function (e) {
         if (e.which === 39 || e.which === 68) {
-            $('.planets').find('.planet').animate({
+           /* $('.planets').find('.planet').animate({
                 'left': '+=10px'
-            });
+            });*/
+            clearTimeout(timer);
+            timer = setTimeout(function() {
+                degree += 2; rotate();
+            }, 5);
+            rotate();
         }
         else if (e.which === 37 || e.which === 65) {
-            $('.planets').find('.planet').animate({
+           /* $('.planets').find('.planet').animate({
                 'left': '-=10px'
-            });
+            });*/
+            clearTimeout(timer);
+            timer = setTimeout(function() {
+                degree -= 2; rotate();
+            }, 5);
+            rotate();
         }
+    });
+    
+    $(document).keyup(function (e) {
+        clearTimeout(timer);
+    });
+    
+    
+    $(document).click(function() {
+        clearTimeout(timer);
+    }, function() {
+       rotate();
     });
 }
 
@@ -52,10 +80,10 @@ function getPositions($box) {
     return [ [ pos.left, pos.left + width ], [ pos.top, pos.top + height ] ];
 }
 
-function position($item, radius) {
+function position($item) {
     var pos = $item.offset();
-    var width = $box.width();
-    var height = $box.height();
+    var width = $item.width();
+    var height = $item.height();
     return [ [ pos.left, pos.left + width ], [ pos.top, pos.top + height ] ];
 }
         
@@ -74,14 +102,10 @@ function collision($div1, $div2) {
     return horizontalMatch && verticalMatch;
 }
 
-function randomPlanetDiv() {
-    var sizeOuter = Math.floor(Math.random() * 3);
-    var sizeInner = Math.floor(Math.random() * 3);
-    var colour = Math.floor(Math.random() * 3);
-    
-    var fieldSize = fieldSizes[sizeOuter];
-    var planetSize = planetSizes[sizeInner];
-    var planetColour = planetColours[colour];
+function randomPlanetDiv() {    
+    var fieldSize = fieldSizes[Math.floor(Math.random() * 3)];
+    var planetSize = planetSizes[Math.floor(Math.random() * 3)];
+    var planetColour = planetColours[Math.floor(Math.random() * 3)];
     
     var $elem = $(PLANET_TEMPLATE);
     $elem.addClass(fieldSize);
@@ -109,8 +133,8 @@ function randomPlanet(x, y) {
     $planets.append($elem);
     $planets.children().each(function() {
        // p.toggle();
-        while (collision($(this), $elem)) {
-            alert('collision!');
+        if (collision($(this), $elem)) {
+          //  alert('collision!');
             x = Math.random() * $(document).innerWidth();
             y = Math.random() * $(document).innerHeight();
             $elem.css('left', x + 'px');
