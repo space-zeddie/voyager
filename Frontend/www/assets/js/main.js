@@ -63,59 +63,124 @@ function init(canvas, animFrame) {
 
 exports.init = init;
 },{"./generator":2,"./ship":4}],2:[function(require,module,exports){
-var planets = require('./planet');
-
-function generatePlanet() {
-    planets.init($('.planet'));
-    
-    var x = Math.random() * $(document).innerWidth();
-    var y = Math.random() * $(document).innerHeight();
-    //alert('width: ' + $(document).innerWidth() + '; height: ' + $(document).innerHeight());
-    
-    planets.randomPlanet(x, y);
-}
-
-exports.generatePlanet = generatePlanet;
-},{"./planet":3}],3:[function(require,module,exports){
+var cosmos = require('./planet');
+var levelWidth = 10000;
+var levelHeight = 900;
+var sectionWidth = 1000;
 var planets = [];
-var OFFSET = 10;
-var fieldSizes = ['small', 'medium', 'large'];
-var planetSizes = ['regular', 'dwarf', 'giant'];
-var planetColours = ['red', 'blue', 'cornsilk'];
 
 var PLANET_TEMPLATE = '<div class="planet"><div class="gravity-field"><div class="planet-surface"></div></div></div>';
 var $planets = $('.planets');
 
-function getPositions($box) {
-    var pos = $box.position();
-    var width = $box.width();
-    var height = $box.height();
-    return [ [ pos.left, pos.left + width ], [ pos.top, pos.top + height ] ];
-}
-
-function position($item) {
-    var pos = $item.offset();
-    var width = $item.width();
-    var height = $item.height();
-    return [ [ pos.left, pos.left + width ], [ pos.top, pos.top + height ] ];
-}
+function generatePlanet() {
+    
+    function planetsOverlap(planet1, planet2) {
+        var cx1 = planet1.physics.centerX;
+        var cy1 = planet1.physics.centerY;
+        var cx2 = planet2.physics.centerX;
+        var cy2 = planet2.physics.centerY;
+        var dist = Math.sqrt((cx1 - cx2) * (cx1 - cx2) + (cy1 - cy2) * (cy1 - cy2));
+        var lim1 = planet1.physics.fieldRadius + planet2.physics.surfaceRadius;
+        var lim2 = planet2.physics.fieldRadius + planet1.physics.surfaceRadius;
         
-function comparePositions(p1, p2) {
-   // alert(p1 + '; ' + p2);
-    var x1 = p1[0] < p2[0] ? p1 : p2;
-    var x2 = p1[0] < p2[0] ? p2 : p1;
-    return x1[1] > x2[0] || x1[0] === x2[0];
+        return dist <= lim1 || dist <= lim2;
+    }
+    
+    function appendPlanetDiv(planet) {
+        var $elem = $(PLANET_TEMPLATE);
+        $elem.addClass(planet.style.fieldSize);
+        $elem.find('.planet-surface').addClass(planet.style.planetSize);
+        $elem.find('.planet-surface').addClass(planet.style.planetColour);
+        $planets.append($elem);
+    }
+    
+    function randomPlanet() {    
+       // alert(planets.length);
+        
+        function newPlanet() {
+            var x = Math.random() * $(document).innerWidth();
+            var y = Math.random() * $(document).innerHeight();
+            var g = Math.random();
+            return cosmos.Planet(x, y, g);
+        }
+        
+        function overlaps(planet, planets) {
+            if (!planet)
+                return true;
+            planets.forEach(function (p) {
+                if (planetsOverlap(p, planet))
+                    return true;
+               // alert(planetsOverlap(p, planet));
+            });
+            return false;
+        }
+        
+        var planet = newPlanet();
+        while (!overlaps(planet)) {
+            planet = newPlanet();   
+          //  alert('iter');
+        }
+       // } else {
+        appendPlanetDiv(planet);
+        planets.push(planet);   
+    }
+    
+   // var planet1 = cosmos.Planet(500, 500, 0.9);
+   // var planet2 = cosmos.Planet(600, 600, 0.9);
+   // appendPlanetDiv(planet1);
+   // appendPlanetDiv(planet2);
+   // alert(planetsOverlap(planet1, planet2));
+    randomPlanet();
+    randomPlanet();
+    
 }
 
-function collision($div1, $div2) {
-    var pos = position($div1);
-    var pos2 = position($div2);
-    var horizontalMatch = comparePositions(pos[0], pos2[0]);
-    var verticalMatch = comparePositions(pos[1], pos2[1]);       
-    return horizontalMatch && verticalMatch;
+exports.generatePlanet = generatePlanet;
+},{"./planet":3}],3:[function(require,module,exports){
+var fieldSizes = ['small', 'medium', 'large'];
+var fieldSizesPx = {small: 250, medium: 500, large: 750};
+var planetSizes = ['regular', 'dwarf', 'giant'];
+var planetSizesRatio = {regular: 0.5, dwarf: 0.25, giant: 0.75};
+var planetColours = ['red', 'blue', 'cornsilk'];
+
+function Planet(centerX, centerY, g) {
+    var fieldSize = fieldSizes[Math.floor(Math.random() * 3)];
+    var planetSize = planetSizes[Math.floor(Math.random() * 3)];
+    var planetColour = planetColours[Math.floor(Math.random() * 3)];
+    
+    var fieldRadius = fieldSizesPx[fieldSize] / 2;
+    var surfaceRadius = fieldRadius * planetSizesRatio[planetSize];
+    
+    function insideGravityField(x, y) {
+        var val = (x - centerX) * (x - centerX) + (y - centerY) * (y - centerY);
+        return val <= fieldRadius * fieldRadius;
+    }
+
+    function collides(x, y) {
+        var val = (x - centerX) * (x - centerX) + (y - centerY) * (y - centerY);
+        return val <= surfaceRadius * surfaceRadius;;
+    }
+    
+    return {
+        physics: {
+            centerX: centerX,
+            centerY: centerY,
+            fieldRadius: fieldRadius,
+            surfaceRadius: surfaceRadius,
+            g: g,
+            insideGravityField: insideGravityField,
+            collides: collides
+        },
+        style: {
+            fieldSize: fieldSize,
+            planetSize: planetSize,
+            planetColour: planetColour
+        }
+    };
+    
 }
 
-function randomPlanetDiv() {    
+/*function randomPlanetDiv() {    
     var fieldSize = fieldSizes[Math.floor(Math.random() * 3)];
     var planetSize = planetSizes[Math.floor(Math.random() * 3)];
     var planetColour = planetColours[Math.floor(Math.random() * 3)];
@@ -125,45 +190,8 @@ function randomPlanetDiv() {
     $elem.find('.planet-surface').addClass(planetSize);
     $elem.find('.planet-surface').addClass(planetColour);
     
-    // TEST
-    /*$elem.css('left', '+=200px');
-    planets.push(createPlanet($elem));
-    $planets.append($elem);*/
     return $elem;
-}
-
-function randomPlanet(x, y) {
-    console.log(x + ', ' + y);
-    var $elem = randomPlanetDiv();
-    $elem.css('left', x + 'px');
-    $elem.css('top', y + 'px');
-    //$elem.addClass('new');
-    var planet = createPlanet($elem);
-    var success = true;
-    
-    //alert('elem: ' + JSON.stringify($elem.position()) + ', ' + $elem.width());
-    
-    $planets.append($elem);
-    $planets.children().each(function() {
-       // p.toggle();
-        if (collision($(this), $elem)) {
-          //  alert('collision!');
-            x = Math.random() * $(document).innerWidth();
-            y = Math.random() * $(document).innerHeight();
-            $elem.css('left', x + 'px');
-            $elem.css('top', y + 'px');
-        }
-    });
-    
-   // if (success) {
-        planets.push(planet);
-       // $planets.append($elem);
-       // $elem.removeClass('new');
-     //   planetOverlap(planet);
-   // } else 
-      //  $planets.remove('.new');
-    return success;
-}
+}*/
 
 function createPlanet($elem) {
     var $gravity = $elem.find('.gravity-field');
@@ -192,16 +220,13 @@ function createPlanet($elem) {
 }
 
 function init($elem) {
-    planets.push(createPlanet($elem));
-}
-
-function allPlanets() {
-    return planets;
+    createPlanet($elem);
+    var elemInnerDiameter = $elem.find('.planet-surface').width();   
+    alert('elemInnerDiameter: ' + elemInnerDiameter);
 }
 
 exports.init = init;
-exports.allPlanets = allPlanets;
-exports.randomPlanet = randomPlanet;
+exports.Planet = Planet;
 },{}],4:[function(require,module,exports){
 function init() {
     var $ship = $('.ship');
