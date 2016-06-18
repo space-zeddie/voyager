@@ -7,7 +7,7 @@ var planets = [];
 var PLANET_TEMPLATE = '<div class="planet"><div class="gravity-field"><div class="planet-surface"></div></div></div>';
 var $planets = $('.planets');
 
-function generatePlanet() {
+function generatePlanet(limWidthLower, limWidth, limHeight, planets) {
     
     function planetsOverlap(planet1, planet2) {
         var cx1 = planet1.physics.centerX;
@@ -18,7 +18,9 @@ function generatePlanet() {
         var lim1 = planet1.physics.fieldRadius + planet2.physics.surfaceRadius;
         var lim2 = planet2.physics.fieldRadius + planet1.physics.surfaceRadius;
         
-        return dist <= lim1 || dist <= lim2;
+        return (dist <= lim1 || dist <= lim2);
+        //alert(dist <= lim1);
+        //return (dist <= lim1);
     }
     
     function appendPlanetDiv(planet) {
@@ -26,48 +28,60 @@ function generatePlanet() {
         $elem.addClass(planet.style.fieldSize);
         $elem.find('.planet-surface').addClass(planet.style.planetSize);
         $elem.find('.planet-surface').addClass(planet.style.planetColour);
+        $elem.css('top', (planet.physics.centerX - planet.physics.fieldRadius) + 'px');
+        $elem.css('left', (planet.physics.centerY - planet.physics.fieldRadius) + 'px');
         $planets.append($elem);
     }
     
-    function randomPlanet() {    
+   // function randomPlanetInSector(limWidthLower, limWidth, limHeight, planets) {    
        // alert(planets.length);
         
         function newPlanet() {
-            var x = Math.random() * $(document).innerWidth();
-            var y = Math.random() * $(document).innerHeight();
+            var x = Math.random() * limWidth + limWidthLower;
+            var y = Math.random() * limHeight;
             var g = Math.random();
             return cosmos.Planet(x, y, g);
         }
         
         function overlaps(planet, planets) {
-            if (!planet)
-                return true;
+            var over = false;
             planets.forEach(function (p) {
+                //alert(JSON.stringify(p));
                 if (planetsOverlap(p, planet))
-                    return true;
+                    over = true;
                // alert(planetsOverlap(p, planet));
             });
-            return false;
+            return over;
         }
         
         var planet = newPlanet();
-        while (!overlaps(planet)) {
+       // alert(overlaps(planet, planets));
+    /*    while (overlaps(planet, planets)) {
             planet = newPlanet();   
-          //  alert('iter');
-        }
-       // } else {
+            //alert('iter');
+        }*/
         appendPlanetDiv(planet);
         planets.push(planet);   
-    }
-    
-   // var planet1 = cosmos.Planet(500, 500, 0.9);
-   // var planet2 = cosmos.Planet(600, 600, 0.9);
-   // appendPlanetDiv(planet1);
-   // appendPlanetDiv(planet2);
-   // alert(planetsOverlap(planet1, planet2));
-    randomPlanet();
-    randomPlanet();
-    
+   // }
+
+
 }
 
-exports.generatePlanet = generatePlanet;
+function generateLevel() {
+    var offset = 100;
+    var height = levelHeight;
+    var widthLower = 0;
+    var widthHigher = offset;
+    var counter = 0;
+    
+    while (widthLower <= levelWidth) {
+        generatePlanet(widthLower, widthHigher, height, planets);
+        widthLower = planets[counter++].physics.centerX * 2;
+        widthHigher += widthLower;
+    }
+    
+    //generatePlanet(0, offset, $(document).innerHeight(), planets);
+   // var nextLim = planets[0].physics.centerX;
+   // generatePlanet(2*nextLim, 2*nextLim + offset, $(document).innerHeight(), planets);
+}
+exports.generateLevel = generateLevel;

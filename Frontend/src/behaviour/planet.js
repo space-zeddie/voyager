@@ -4,13 +4,14 @@ var planetSizes = ['regular', 'dwarf', 'giant'];
 var planetSizesRatio = {regular: 0.5, dwarf: 0.25, giant: 0.75};
 var planetColours = ['red', 'blue', 'cornsilk'];
 
-function Planet(centerX, centerY, g) {
+function Planet(edgeX, centerY, g) {
     var fieldSize = fieldSizes[Math.floor(Math.random() * 3)];
     var planetSize = planetSizes[Math.floor(Math.random() * 3)];
     var planetColour = planetColours[Math.floor(Math.random() * 3)];
     
     var fieldRadius = fieldSizesPx[fieldSize] / 2;
     var surfaceRadius = fieldRadius * planetSizesRatio[planetSize];
+    var centerX = edgeX + surfaceRadius;
     
     function insideGravityField(x, y) {
         var val = (x - centerX) * (x - centerX) + (y - centerY) * (y - centerY);
