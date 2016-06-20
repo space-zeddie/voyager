@@ -6,8 +6,9 @@ var animFrame = null;
 function init(canvas, animFrame) {
     generator.generateLevel();
     var $shuttle = $('.ship'), degree = 0, timer;
-    var $planets = $('.planets').find('.planet'), planetsTimer;
-    var vx = 2;
+    var timerShuttle;
+    var $planets = $('.planets').find('.planet');
+    var vx = 50;
     var vy = 0;
     
     function rotate() {        
@@ -18,7 +19,6 @@ function init(canvas, animFrame) {
     
     function move() {
         $shuttle.animate({
-            'left': '+=' + vx + 'px',
             'top': '+=' + vy + 'px'
         });
     }
@@ -31,7 +31,7 @@ function init(canvas, animFrame) {
             clearTimeout(timer);
             timer = setTimeout(function() {
                 degree += 2; rotate();
-                move();
+                //move();
             }, 5);
             rotate();
         }
@@ -42,7 +42,7 @@ function init(canvas, animFrame) {
             clearTimeout(timer);
             timer = setTimeout(function() {
                 degree -= 2; rotate();
-                move();
+                //move();
             }, 5);
             rotate();
         }
@@ -58,6 +58,15 @@ function init(canvas, animFrame) {
     }, function() {
        rotate();
     });
+    
+   /* clearTimeout(timerShuttle);
+    timerShuttle = setTimeout(function() {
+        move();
+    }, 0);
+    move();*/
+    $planets.animate({
+        left: '-' + generator.levelWidth() + 'px'
+    }, 50000);
 }
 
 exports.init = init;

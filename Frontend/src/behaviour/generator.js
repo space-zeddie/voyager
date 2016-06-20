@@ -84,4 +84,14 @@ function generateLevel() {
    // var nextLim = planets[0].physics.centerX;
    // generatePlanet(2*nextLim, 2*nextLim + offset, $(document).innerHeight(), planets);
 }
+
+function width() {
+    return levelWidth;
+}
+function height() {
+    return levelHeight;
+}
+
 exports.generateLevel = generateLevel;
+exports.levelWidth = width;
+exports.levelHeight = height;
