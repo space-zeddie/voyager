@@ -18,9 +18,12 @@ function init(canvas, animFrame) {
     }    
     
     function move() {
-        $shuttle.animate({
-            'top': '+=' + vy + 'px'
-        });
+        $planets.animate({
+            top: '-=' + vy + 'px'
+        }, {duration: 400, queue: false});
+        /*$shuttle.animate({
+            top: '+=' + vy + 'px'
+        });*/
     }
     
     $(document).keydown(function (e) {
@@ -31,7 +34,10 @@ function init(canvas, animFrame) {
             clearTimeout(timer);
             timer = setTimeout(function() {
                 degree += 2; rotate();
-                //move();
+                
+        $planets.animate({
+            top: '-=' + vy + 'px'
+        }, {duration: 400, queue: false});
             }, 5);
             rotate();
         }
@@ -42,7 +48,10 @@ function init(canvas, animFrame) {
             clearTimeout(timer);
             timer = setTimeout(function() {
                 degree -= 2; rotate();
-                //move();
+                
+        $planets.animate({
+            top: '-=' + vy + 'px'
+        }, {duration: 400, queue: false});
             }, 5);
             rotate();
         }
@@ -65,8 +74,8 @@ function init(canvas, animFrame) {
     }, 0);
     move();*/
     $planets.animate({
-        left: '-' + generator.levelWidth() + 'px'
-    }, 50000);
+        left: '-' + generator.levelWidth() + 'px',
+    }, {duration: 50000, queue: false});
 }
 
 exports.init = init;
