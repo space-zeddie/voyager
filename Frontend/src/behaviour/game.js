@@ -4,7 +4,11 @@ var canvas = null;
 var animFrame = null;
 
 function init(canvas, animFrame) {
+    var ctx = canvas.getContext('2d');
     generator.generateLevel();
+    generator.planets().forEach(function (p) {
+        alert(JSON.stringify(p));
+    });
     var $shuttle = $('.ship'), degree = 0, timer;
     var timerShuttle;
     var $planets = $('.planets').find('.planet');
@@ -76,6 +80,7 @@ function init(canvas, animFrame) {
     $planets.animate({
         left: '-' + generator.levelWidth() + 'px',
     }, {duration: 50000, queue: false});
+   // alert('end');
 }
 
 exports.init = init;

@@ -5,7 +5,11 @@ var canvas = null;
 var animFrame = null;
 
 function init(canvas, animFrame) {
+    var ctx = canvas.getContext('2d');
     generator.generateLevel();
+    generator.planets().forEach(function (p) {
+        alert(JSON.stringify(p));
+    });
     var $shuttle = $('.ship'), degree = 0, timer;
     var timerShuttle;
     var $planets = $('.planets').find('.planet');
@@ -77,6 +81,7 @@ function init(canvas, animFrame) {
     $planets.animate({
         left: '-' + generator.levelWidth() + 'px',
     }, {duration: 50000, queue: false});
+   // alert('end');
 }
 
 exports.init = init;
@@ -159,7 +164,7 @@ function generateLevel() {
     
     while (widthLower <= levelWidth) {
         generatePlanet(widthLower, widthHigher, height, planets);
-        widthLower = planets[counter++].physics.centerX * 2;
+        widthLower = planets[counter++].physics.centerX;
         widthHigher += widthLower;
     }
     
@@ -175,9 +180,14 @@ function height() {
     return levelHeight;
 }
 
+function allPlanets() {
+    return planets;
+}
+
 exports.generateLevel = generateLevel;
 exports.levelWidth = width;
 exports.levelHeight = height;
+exports.planets = allPlanets;
 },{"./planet":3}],3:[function(require,module,exports){
 var fieldSizes = ['small', 'medium', 'large'];
 var fieldSizesPx = {small: 250, medium: 500, large: 750};
@@ -281,7 +291,7 @@ $(function() {
     var game = require('./behaviour/game');
     
     (function () {
-        var canvas = $('#canvas');
+        var canvas = $('#gameCanvas');
         //var ctx = canvas.getContext("2d");
         var player = {
             distance: 0

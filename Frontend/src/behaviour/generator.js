@@ -76,7 +76,7 @@ function generateLevel() {
     
     while (widthLower <= levelWidth) {
         generatePlanet(widthLower, widthHigher, height, planets);
-        widthLower = planets[counter++].physics.centerX * 2;
+        widthLower = planets[counter++].physics.centerX;
         widthHigher += widthLower;
     }
     
@@ -92,6 +92,11 @@ function height() {
     return levelHeight;
 }
 
+function allPlanets() {
+    return planets;
+}
+
 exports.generateLevel = generateLevel;
 exports.levelWidth = width;
 exports.levelHeight = height;
+exports.planets = allPlanets;
