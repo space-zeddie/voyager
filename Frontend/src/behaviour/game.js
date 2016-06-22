@@ -4,10 +4,10 @@ var canvas = null;
 var animFrame = null;
 
 function init(canvas, animFrame) {
-    var ctx = canvas.getContext('2d');
+    //var ctx = canvas.getContext('2d');
     generator.generateLevel();
     generator.planets().forEach(function (p) {
-        alert(JSON.stringify(p));
+       // alert(JSON.stringify(p));
     });
     var $shuttle = $('.ship'), degree = 0, timer;
     var timerShuttle;

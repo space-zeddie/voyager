@@ -28,8 +28,8 @@ function generatePlanet(limWidthLower, limWidth, limHeight, planets) {
         $elem.addClass(planet.style.fieldSize);
         $elem.find('.planet-surface').addClass(planet.style.planetSize);
         $elem.find('.planet-surface').addClass(planet.style.planetColour);
-        $elem.css('top', (planet.physics.centerX - planet.physics.fieldRadius) + 'px');
-        $elem.css('left', (planet.physics.centerY - planet.physics.fieldRadius) + 'px');
+        $elem.css('top', (planet.physics.centerY - planet.physics.fieldRadius) + 'px');
+        $elem.css('left', (planet.physics.centerX - planet.physics.fieldRadius) + 'px');
         $planets.append($elem);
     }
     
@@ -37,8 +37,10 @@ function generatePlanet(limWidthLower, limWidth, limHeight, planets) {
        // alert(planets.length);
         
         function newPlanet() {
-            var x = Math.random() * limWidth + limWidthLower;
-            var y = Math.random() * limHeight;
+           /// var x = Math.random() * limWidth + limWidthLower;
+           // var y = Math.random() * limHeight;
+            var x = limWidth;
+            var y = limHeight / 2;
             var g = Math.random();
             return cosmos.Planet(x, y, g);
         }
@@ -78,6 +80,7 @@ function generateLevel() {
         generatePlanet(widthLower, widthHigher, height, planets);
         widthLower = planets[counter++].physics.centerX;
         widthHigher += widthLower;
+        alert(widthHigher + ', ' + widthLower)
     }
     
     //generatePlanet(0, offset, $(document).innerHeight(), planets);

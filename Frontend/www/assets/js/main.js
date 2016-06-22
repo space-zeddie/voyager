@@ -5,10 +5,10 @@ var canvas = null;
 var animFrame = null;
 
 function init(canvas, animFrame) {
-    var ctx = canvas.getContext('2d');
+    //var ctx = canvas.getContext('2d');
     generator.generateLevel();
     generator.planets().forEach(function (p) {
-        alert(JSON.stringify(p));
+       // alert(JSON.stringify(p));
     });
     var $shuttle = $('.ship'), degree = 0, timer;
     var timerShuttle;
@@ -116,8 +116,8 @@ function generatePlanet(limWidthLower, limWidth, limHeight, planets) {
         $elem.addClass(planet.style.fieldSize);
         $elem.find('.planet-surface').addClass(planet.style.planetSize);
         $elem.find('.planet-surface').addClass(planet.style.planetColour);
-        $elem.css('top', (planet.physics.centerX - planet.physics.fieldRadius) + 'px');
-        $elem.css('left', (planet.physics.centerY - planet.physics.fieldRadius) + 'px');
+        $elem.css('top', (planet.physics.centerY - planet.physics.fieldRadius) + 'px');
+        $elem.css('left', (planet.physics.centerX - planet.physics.fieldRadius) + 'px');
         $planets.append($elem);
     }
     
@@ -125,8 +125,10 @@ function generatePlanet(limWidthLower, limWidth, limHeight, planets) {
        // alert(planets.length);
         
         function newPlanet() {
-            var x = Math.random() * limWidth + limWidthLower;
-            var y = Math.random() * limHeight;
+           /// var x = Math.random() * limWidth + limWidthLower;
+           // var y = Math.random() * limHeight;
+            var x = limWidth;
+            var y = limHeight / 2;
             var g = Math.random();
             return cosmos.Planet(x, y, g);
         }
@@ -166,6 +168,7 @@ function generateLevel() {
         generatePlanet(widthLower, widthHigher, height, planets);
         widthLower = planets[counter++].physics.centerX;
         widthHigher += widthLower;
+        alert(widthHigher + ', ' + widthLower)
     }
     
     //generatePlanet(0, offset, $(document).innerHeight(), planets);
