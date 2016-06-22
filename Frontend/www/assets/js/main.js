@@ -6,6 +6,7 @@ var animFrame = null;
 
 function init(canvas, animFrame) {
     var ctx = canvas.getContext('2d');
+    
     generator.generateLevel();
     generator.planets().forEach(function (p) {
         alert(JSON.stringify(p));
@@ -23,12 +24,9 @@ function init(canvas, animFrame) {
     }    
     
     function move() {
-        $planets.animate({
-            top: '-=' + vy + 'px'
-        }, {duration: 400, queue: false});
-        /*$shuttle.animate({
-            top: '+=' + vy + 'px'
-        });*/
+        $shuttle.animate({
+            'top': '+=' + vy + 'px'
+        });
     }
     
     $(document).keydown(function (e) {
@@ -39,10 +37,7 @@ function init(canvas, animFrame) {
             clearTimeout(timer);
             timer = setTimeout(function() {
                 degree += 2; rotate();
-                
-        $planets.animate({
-            top: '-=' + vy + 'px'
-        }, {duration: 400, queue: false});
+                //move();
             }, 5);
             rotate();
         }
@@ -53,10 +48,7 @@ function init(canvas, animFrame) {
             clearTimeout(timer);
             timer = setTimeout(function() {
                 degree -= 2; rotate();
-                
-        $planets.animate({
-            top: '-=' + vy + 'px'
-        }, {duration: 400, queue: false});
+                //move();
             }, 5);
             rotate();
         }
