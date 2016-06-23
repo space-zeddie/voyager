@@ -1,37 +1,53 @@
 var ship = require('./ship');
 var generator = require('./generator');
 var cosmos = require('./planet');
-var canvas = null;
-var animFrame = null;
 
-function init(canvas, animFrame) {
-    //var ctx = canvas.getContext('2d');
+function init(player) {
     generator.generateLevel();
-    generator.planets().forEach(function (p) {
-       // alert(JSON.stringify(p));
-    });
+    
     var $shuttle = $('.ship'), degree = 0, timer;
-    var timerShuttle;
+    ship.setPosition($shuttle.offset().left, $shuttle.offset().top);
     var $planets = $('.planets').find('.planet');
     var vx = 50;
     var vy = 0;
     
-    function rotate() {
-        var currentX = $shuttle.offset().left();
-        var currentY = $shuttle.offset().top();
-        if (currentY + vy >= generator.width() || currentY - vy <= 0)
+    function setVY(degree) {
+        
+    }
+    
+    function rotate(clockwise) {
+        /*var currentY = $shuttle.offset().top;
+        if (currentY + vy >= generator.levelWidth() + 200 || currentY - vy <= 0) {
+            alert('nowhere to rotate');
+            $shuttle.animate(
+                {
+                    top: '45%',
+                    left: '45%'
+                }, {duration: 400, queue: false});
             return;
-        $shuttle.css({ WebkitTransform: 'rotate(' + degree + 'deg)'});  
-        $shuttle.css({ '-moz-transform': 'rotate(' + degree + 'deg)'});
-        vy = 2*degree;
+        }*/
+        if (clockwise)
+            vy = -degree;
+        else vy = degree;
         clearTimeout(timer);
             timer = setTimeout(function() {
-                degree += 2; rotate();
-                
+                degree += 0.5;// rotate();
+        
+       // $shuttle.css({ WebkitTransform: 'rotate(' + degree + 'deg)'});  
+       // $shuttle.css({ '-moz-transform': 'rotate(' + degree + 'deg)'});        
         $shuttle.animate({
             top: '+=' + vy + 'px'
-        }, {duration: 400, queue: false});
+        }, {
+            duration: 400, 
+            queue: false,
+            step: function (currentDeg) {
+                $shuttle.css('top', '+=' + currentDeg + 'px');
+                $shuttle.css({ WebkitTransform: 'rotate(' + currentDeg + 'deg)'});  
+                $shuttle.css({ '-moz-transform': 'rotate(' + currentDeg + 'deg)'}); 
+            }
+        });
             }, 5);
+        ship.updatePosition(0, vy);
     }    
     
     $(document).keydown(function (e) {
@@ -40,14 +56,14 @@ function init(canvas, animFrame) {
                 'left': '+=10px'
             });*/
             
-            rotate();
+            rotate(true);
         }
         else if (e.which === 37 || e.which === 65) {
            /* $('.planets').find('.planet').animate({
                 'left': '-=10px'
             });*/
             
-            rotate();
+            rotate(false);
         }
     });
     
@@ -62,11 +78,6 @@ function init(canvas, animFrame) {
        rotate();
     });
     
-   /* clearTimeout(timerShuttle);
-    timerShuttle = setTimeout(function() {
-        move();
-    }, 0);
-    move();*/
     $planets.animate({
         left: '-' + generator.levelWidth() + 'px'
     }, 
@@ -77,9 +88,9 @@ function init(canvas, animFrame) {
             generator.planets().forEach(function (p) {
                 cosmos.movePlanet(p, currentX, 0);
             });
+           
         }
     });
-   // alert('end');
 }
 
 exports.init = init;
