@@ -7,10 +7,24 @@ function init(player) {
     generator.generateLevel();
     
     var $shuttle = $('.ship'), degree = 0, timer;
-    ship.setPosition(0.45 * $(document).innerWidth(), 0.45 * $(document).innerHeight());
+   // ship.setPosition(0.45 * $(document).innerWidth(), 0.45 * $(document).innerHeight());
+    ship.setPosition($('.ship').offset().left, $('.ship').offset().top);
+    alert(JSON.stringify(ship.position()));
     var $planets = $('.planets').find('.planet');
     var vx = 50;
-    var vy = 0;
+    var vy = 10;
+    var time = 0;
+    var pull = null;
+    
+    function inGravityFieldOf(x, y) {
+        pull = null;
+       // alert(x + ', ' + y);
+        generator.planets().forEach(function (p) {
+            if (p.physics.insideGravityField(x, y))
+                pull = p;
+        });
+        return pull;
+    }
     
     function rotate(clockwise) {
         /*var currentY = $shuttle.offset().top;
@@ -49,12 +63,16 @@ function init(player) {
     
     function steer() {
         clearTimeout(timer);
-        var velocity = 10;
-        var time = 0;
+        vy = 10;
+        
+        //var velocity = 10;
+        //var time = 0;
+       // var pull = null;
         timer = setTimeout(function() {
             //velocity = 1;
             time += 1;
-            ship.updatePosition(0, velocity, time);
+            //alert('time:' + time);
+           /* ship.updatePosition(0, velocity, 0, time);  
             $shuttle.animate({
                 top: ship.position().y + 'px'
             }, {
@@ -62,21 +80,28 @@ function init(player) {
                 queue: false,
                 step: function (deg) {
                    // $shuttle.css({ WebkitTransform: 'rotate(' + deg + 'deg)'});  
-                   // $shuttle.css({ '-moz-transform': 'rotate(' + deg + 'deg)'}); 
+                   // $shuttle.css({ '-moz-transform': 'rotate(' + deg + 'deg)'});                        
                 }
-            });
+            });*/
         });
+        
+            //alert(JSON.stringify(ship.position()));
     }
     
     $(document).keydown(function (e) {
         if (e.which === 39 || e.which === 68) {
+           // time = 0;
            steer();
+           // time = 0;
+           // vy = 0;
             
            // rotate(true);
         }
         else if (e.which === 37 || e.which === 65) {
-          
+         // time = 0;
             steer();
+          // time = 0;
+          //  vy = 0;
             //rotate(false);
         }
     });
@@ -85,7 +110,8 @@ function init(player) {
         clearTimeout(timer);
     });
     
-    
+    var velX = generator.levelWidth() / 50000;
+    // alert(velX);
     $planets.animate({
         left: '-=' + generator.levelWidth() + 'px'
     }, 
@@ -93,12 +119,29 @@ function init(player) {
         duration: 50000, 
         queue: false,
         step: function (currentX) {
-            generator.planets().forEach(function (p) {
-                cosmos.movePlanet(p, currentX, 0);
+           /// generator.planets().forEach(function (p) {
+              //  cosmos.movePlanet(p, currentX, 0);
+            //});
+            //alert(ship.position().x + ', ' + ship.position().y);
+            inGravityFieldOf(ship.position().x, ship.position().y);
+            var a = 0;
+            /*if (pull){ a = pull.physics.g;
+            alert(JSON.stringify(pull));
+                     }*/
+            ship.updatePosition(velX, vy, a, time);  
+           $shuttle.animate({
+                top: '+=' + ship.position().y + 'px'
+            }, {
+                duration: 400,
+                queue: false,
+                step: function (deg) {
+                   // alert(ship.position().x);
+                   // $shuttle.css({ WebkitTransform: 'rotate(' + deg + 'deg)'});  
+                   // $shuttle.css({ '-moz-transform': 'rotate(' + deg + 'deg)'});                        
+                }
             });
-           
         },
-        complete: function () { alert ('game over'); }
+        complete: function () { alert (ship.position().x + ', ' + ship.position().y); }
     });
 }
 
@@ -187,7 +230,7 @@ function generateLevel() {
         generatePlanet(widthLower, widthHigher, height, planets);
         widthLower = planets[counter].physics.centerX + planets[counter++].physics.surfaceRadius;
         widthHigher = widthLower + offset;
-        alert(widthHigher + ', ' + widthLower)
+        //alert(widthHigher + ', ' + widthLower)
     }
     
     //generatePlanet(0, offset, $(document).innerHeight(), planets);
@@ -318,11 +361,12 @@ var posX = 0;
 var posY = 0;
 var bottom = $(document).innerHeight();
 
-function updatePosition(vx, vy, t) {
-    if (posY >= bottom || posY <= 0)
-        return;
-    posX += vx*t;
-    posY += vy*t;
+function updatePosition(x, vy, ya, t) {
+   // if (posY >= bottom || posY <= 0)
+     //   return;
+    posX += x;
+    //if (t !== 0) alert(x + ', ' + vy +', ' + t);
+    posY += vy*t + 0.5*ya*t*t;
 }
 
 function setPosition(x, y) {

@@ -81,7 +81,7 @@ function generateLevel() {
         generatePlanet(widthLower, widthHigher, height, planets);
         widthLower = planets[counter].physics.centerX + planets[counter++].physics.surfaceRadius;
         widthHigher = widthLower + offset;
-        alert(widthHigher + ', ' + widthLower)
+        //alert(widthHigher + ', ' + widthLower)
     }
     
     //generatePlanet(0, offset, $(document).innerHeight(), planets);
