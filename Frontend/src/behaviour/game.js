@@ -59,9 +59,10 @@ function init(player) {
             }, {
                 duration: 400,
                 queue: false,
-               /* step: function (t) {
-                    ship.updatePosition(0, velocity, t);
-                }*/
+                step: function (deg) {
+                   // $shuttle.css({ WebkitTransform: 'rotate(' + deg + 'deg)'});  
+                   // $shuttle.css({ '-moz-transform': 'rotate(' + deg + 'deg)'}); 
+                }
             });
         });
     }
@@ -85,7 +86,7 @@ function init(player) {
     
     
     $planets.animate({
-        left: '-' + generator.levelWidth() + 'px'
+        left: '-=' + generator.levelWidth() + 'px'
     }, 
     {
         duration: 50000, 
@@ -95,7 +96,8 @@ function init(player) {
                 cosmos.movePlanet(p, currentX, 0);
             });
            
-        }
+        },
+        complete: function () { alert ('game over'); }
     });
 }
 

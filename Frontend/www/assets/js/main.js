@@ -60,9 +60,10 @@ function init(player) {
             }, {
                 duration: 400,
                 queue: false,
-               /* step: function (t) {
-                    ship.updatePosition(0, velocity, t);
-                }*/
+                step: function (deg) {
+                   // $shuttle.css({ WebkitTransform: 'rotate(' + deg + 'deg)'});  
+                   // $shuttle.css({ '-moz-transform': 'rotate(' + deg + 'deg)'}); 
+                }
             });
         });
     }
@@ -86,7 +87,7 @@ function init(player) {
     
     
     $planets.animate({
-        left: '-' + generator.levelWidth() + 'px'
+        left: '-=' + generator.levelWidth() + 'px'
     }, 
     {
         duration: 50000, 
@@ -96,7 +97,8 @@ function init(player) {
                 cosmos.movePlanet(p, currentX, 0);
             });
            
-        }
+        },
+        complete: function () { alert ('game over'); }
     });
 }
 
@@ -104,7 +106,7 @@ exports.init = init;
 },{"./generator":2,"./planet":3,"./ship":4}],2:[function(require,module,exports){
 var cosmos = require('./planet');
 var levelWidth = 10000;
-var levelHeight = 900;
+var levelHeight = 500;
 var sectionWidth = 1000;
 var planets = [];
 
@@ -141,10 +143,10 @@ function generatePlanet(limWidthLower, limWidth, limHeight, planets) {
        // alert(planets.length);
         
         function newPlanet() {
-           /// var x = Math.random() * limWidth + limWidthLower;
-           // var y = Math.random() * limHeight;
-            var x = limWidth;
-            var y = limHeight / 2;
+            var x = Math.random() * limWidth + limWidthLower;
+            var y = Math.random() * limHeight;
+            //var x = limWidth;
+           // var y = limHeight / 2;
             var g = Math.random();
             return cosmos.Planet(x, y, g);
         }
@@ -174,17 +176,18 @@ function generatePlanet(limWidthLower, limWidth, limHeight, planets) {
 }
 
 function generateLevel() {
-    var offset = 100;
+    var offset = 100;//100;
     var height = levelHeight;
-    var widthLower = 0;
+    var widthLower = $('.ship').offset().left;
     var widthHigher = offset;
     var counter = 0;
+    var limit = widthLower + levelWidth;
     
-    while (widthLower <= levelWidth) {
+    while (widthLower <= limit) {
         generatePlanet(widthLower, widthHigher, height, planets);
-        widthLower = planets[counter++].physics.centerX;
-        widthHigher += widthLower;
-       // alert(widthHigher + ', ' + widthLower)
+        widthLower = planets[counter].physics.centerX + planets[counter++].physics.surfaceRadius;
+        widthHigher = widthLower + offset;
+        alert(widthHigher + ', ' + widthLower)
     }
     
     //generatePlanet(0, offset, $(document).innerHeight(), planets);
