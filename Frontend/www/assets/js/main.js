@@ -61,18 +61,19 @@ function init(player) {
         ship.updatePosition(0, vy);
     }    
     
-    function steer() {
+    function steer(clockwise) {
         clearTimeout(timer);
-        vy = 10;
         
-        //var velocity = 10;
+        var velocity;
         //var time = 0;
+        time = 0;
        // var pull = null;
         timer = setTimeout(function() {
-            //velocity = 1;
+            if (clockwise) velocity = -1;
+            else velocity = 1;
             time += 1;
             //alert('time:' + time);
-           /* ship.updatePosition(0, velocity, 0, time);  
+            ship.updatePosition(0, velocity, 0, time);  
             $shuttle.animate({
                 top: ship.position().y + 'px'
             }, {
@@ -82,7 +83,7 @@ function init(player) {
                    // $shuttle.css({ WebkitTransform: 'rotate(' + deg + 'deg)'});  
                    // $shuttle.css({ '-moz-transform': 'rotate(' + deg + 'deg)'});                        
                 }
-            });*/
+            });
         });
         
             //alert(JSON.stringify(ship.position()));
@@ -91,7 +92,7 @@ function init(player) {
     $(document).keydown(function (e) {
         if (e.which === 39 || e.which === 68) {
            // time = 0;
-           steer();
+           steer(false);
            // time = 0;
            // vy = 0;
             
@@ -99,7 +100,7 @@ function init(player) {
         }
         else if (e.which === 37 || e.which === 65) {
          // time = 0;
-            steer();
+            steer(true);
           // time = 0;
           //  vy = 0;
             //rotate(false);
@@ -108,6 +109,7 @@ function init(player) {
     
     $(document).keyup(function (e) {
         clearTimeout(timer);
+        time = 0;
     });
     
     var velX = generator.levelWidth() / 50000;
@@ -123,23 +125,23 @@ function init(player) {
               //  cosmos.movePlanet(p, currentX, 0);
             //});
             //alert(ship.position().x + ', ' + ship.position().y);
-            inGravityFieldOf(ship.position().x, ship.position().y);
+            /*inGravityFieldOf(ship.position().x, ship.position().y);
             var a = 0;
             /*if (pull){ a = pull.physics.g;
             alert(JSON.stringify(pull));
                      }*/
-            ship.updatePosition(velX, vy, a, time);  
+          /*  ship.updatePosition(velX, vy, a, time);  
            $shuttle.animate({
-                top: '+=' + ship.position().y + 'px'
+                top: ship.position().y + 'px'
             }, {
-                duration: 400,
+                duration: 50000,
                 queue: false,
                 step: function (deg) {
                    // alert(ship.position().x);
                    // $shuttle.css({ WebkitTransform: 'rotate(' + deg + 'deg)'});  
                    // $shuttle.css({ '-moz-transform': 'rotate(' + deg + 'deg)'});                        
                 }
-            });
+            });*/
         },
         complete: function () { alert (ship.position().x + ', ' + ship.position().y); }
     });
