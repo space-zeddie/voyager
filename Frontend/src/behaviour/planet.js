@@ -23,6 +23,11 @@ function Planet(edgeX, centerY, g) {
         return val <= surfaceRadius * surfaceRadius;;
     }
     
+    function move(x, y) {
+        centerX += x;
+        centerY += y;
+    }
+    
     return {
         physics: {
             centerX: centerX,
@@ -87,5 +92,11 @@ function init($elem) {
     alert('elemInnerDiameter: ' + elemInnerDiameter);
 }
 
+function movePlanet(planet, x, y) {
+    planet.physics.centerX += x;
+    planet.physics.centerY += y;
+}
+
 exports.init = init;
 exports.Planet = Planet;
+exports.movePlanet = movePlanet;

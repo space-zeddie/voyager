@@ -1,6 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var ship = require('./ship');
 var generator = require('./generator');
+var cosmos = require('./planet');
 var canvas = null;
 var animFrame = null;
 
@@ -16,48 +17,37 @@ function init(canvas, animFrame) {
     var vx = 50;
     var vy = 0;
     
-    function rotate() {        
+    function rotate() {
+        var currentX = $shuttle.offset().left();
+        var currentY = $shuttle.offset().top();
+        if (currentY + vy >= generator.width() || currentY - vy <= 0)
+            return;
         $shuttle.css({ WebkitTransform: 'rotate(' + degree + 'deg)'});  
         $shuttle.css({ '-moz-transform': 'rotate(' + degree + 'deg)'});
-        vy = degree;
-    }    
-    
-    function move() {
-        $planets.animate({
-            top: '-=' + vy + 'px'
-        }, {duration: 400, queue: false});
-        /*$shuttle.animate({
+        vy = 2*degree;
+        clearTimeout(timer);
+            timer = setTimeout(function() {
+                degree += 2; rotate();
+                
+        $shuttle.animate({
             top: '+=' + vy + 'px'
-        });*/
-    }
+        }, {duration: 400, queue: false});
+            }, 5);
+    }    
     
     $(document).keydown(function (e) {
         if (e.which === 39 || e.which === 68) {
            /* $('.planets').find('.planet').animate({
                 'left': '+=10px'
             });*/
-            clearTimeout(timer);
-            timer = setTimeout(function() {
-                degree += 2; rotate();
-                
-        $planets.animate({
-            top: '-=' + vy + 'px'
-        }, {duration: 400, queue: false});
-            }, 5);
+            
             rotate();
         }
         else if (e.which === 37 || e.which === 65) {
            /* $('.planets').find('.planet').animate({
                 'left': '-=10px'
             });*/
-            clearTimeout(timer);
-            timer = setTimeout(function() {
-                degree -= 2; rotate();
-                
-        $planets.animate({
-            top: '-=' + vy + 'px'
-        }, {duration: 400, queue: false});
-            }, 5);
+            
             rotate();
         }
     });
@@ -79,13 +69,22 @@ function init(canvas, animFrame) {
     }, 0);
     move();*/
     $planets.animate({
-        left: '-' + generator.levelWidth() + 'px',
-    }, {duration: 50000, queue: false});
+        left: '-' + generator.levelWidth() + 'px'
+    }, 
+    {
+        duration: 50000, 
+        queue: false,
+        step: function (currentX) {
+            generator.planets().forEach(function (p) {
+                cosmos.movePlanet(p, currentX, 0);
+            });
+        }
+    });
    // alert('end');
 }
 
 exports.init = init;
-},{"./generator":2,"./ship":4}],2:[function(require,module,exports){
+},{"./generator":2,"./planet":3,"./ship":4}],2:[function(require,module,exports){
 var cosmos = require('./planet');
 var levelWidth = 10000;
 var levelHeight = 900;
@@ -168,7 +167,7 @@ function generateLevel() {
         generatePlanet(widthLower, widthHigher, height, planets);
         widthLower = planets[counter++].physics.centerX;
         widthHigher += widthLower;
-        alert(widthHigher + ', ' + widthLower)
+       // alert(widthHigher + ', ' + widthLower)
     }
     
     //generatePlanet(0, offset, $(document).innerHeight(), planets);
@@ -215,6 +214,11 @@ function Planet(edgeX, centerY, g) {
     function collides(x, y) {
         var val = (x - centerX) * (x - centerX) + (y - centerY) * (y - centerY);
         return val <= surfaceRadius * surfaceRadius;;
+    }
+    
+    function move(x, y) {
+        centerX += x;
+        centerY += y;
     }
     
     return {
@@ -281,8 +285,14 @@ function init($elem) {
     alert('elemInnerDiameter: ' + elemInnerDiameter);
 }
 
+function movePlanet(planet, x, y) {
+    planet.physics.centerX += x;
+    planet.physics.centerY += y;
+}
+
 exports.init = init;
 exports.Planet = Planet;
+exports.movePlanet = movePlanet;
 },{}],4:[function(require,module,exports){
 function init() {
     var $ship = $('.ship');

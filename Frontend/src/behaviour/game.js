@@ -1,5 +1,6 @@
 var ship = require('./ship');
 var generator = require('./generator');
+var cosmos = require('./planet');
 var canvas = null;
 var animFrame = null;
 
@@ -15,48 +16,37 @@ function init(canvas, animFrame) {
     var vx = 50;
     var vy = 0;
     
-    function rotate() {        
+    function rotate() {
+        var currentX = $shuttle.offset().left();
+        var currentY = $shuttle.offset().top();
+        if (currentY + vy >= generator.width() || currentY - vy <= 0)
+            return;
         $shuttle.css({ WebkitTransform: 'rotate(' + degree + 'deg)'});  
         $shuttle.css({ '-moz-transform': 'rotate(' + degree + 'deg)'});
-        vy = degree;
-    }    
-    
-    function move() {
-        $planets.animate({
-            top: '-=' + vy + 'px'
-        }, {duration: 400, queue: false});
-        /*$shuttle.animate({
+        vy = 2*degree;
+        clearTimeout(timer);
+            timer = setTimeout(function() {
+                degree += 2; rotate();
+                
+        $shuttle.animate({
             top: '+=' + vy + 'px'
-        });*/
-    }
+        }, {duration: 400, queue: false});
+            }, 5);
+    }    
     
     $(document).keydown(function (e) {
         if (e.which === 39 || e.which === 68) {
            /* $('.planets').find('.planet').animate({
                 'left': '+=10px'
             });*/
-            clearTimeout(timer);
-            timer = setTimeout(function() {
-                degree += 2; rotate();
-                
-        $planets.animate({
-            top: '-=' + vy + 'px'
-        }, {duration: 400, queue: false});
-            }, 5);
+            
             rotate();
         }
         else if (e.which === 37 || e.which === 65) {
            /* $('.planets').find('.planet').animate({
                 'left': '-=10px'
             });*/
-            clearTimeout(timer);
-            timer = setTimeout(function() {
-                degree -= 2; rotate();
-                
-        $planets.animate({
-            top: '-=' + vy + 'px'
-        }, {duration: 400, queue: false});
-            }, 5);
+            
             rotate();
         }
     });
@@ -78,8 +68,17 @@ function init(canvas, animFrame) {
     }, 0);
     move();*/
     $planets.animate({
-        left: '-' + generator.levelWidth() + 'px',
-    }, {duration: 50000, queue: false});
+        left: '-' + generator.levelWidth() + 'px'
+    }, 
+    {
+        duration: 50000, 
+        queue: false,
+        step: function (currentX) {
+            generator.planets().forEach(function (p) {
+                cosmos.movePlanet(p, currentX, 0);
+            });
+        }
+    });
    // alert('end');
 }
 
