@@ -1,9 +1,12 @@
 var posX = 0;
 var posY = 0;
+var bottom = $(document).innerHeight();
 
-function updatePosition(x, y) {
-    posX += x;
-    posY += y;
+function updatePosition(vx, vy, t) {
+    if (posY >= bottom || posY <= 0)
+        return;
+    posX += vx*t;
+    posY += vy*t;
 }
 
 function setPosition(x, y) {

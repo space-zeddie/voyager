@@ -6,14 +6,10 @@ function init(player) {
     generator.generateLevel();
     
     var $shuttle = $('.ship'), degree = 0, timer;
-    ship.setPosition($shuttle.offset().left, $shuttle.offset().top);
+    ship.setPosition(0.45 * $(document).innerWidth(), 0.45 * $(document).innerHeight());
     var $planets = $('.planets').find('.planet');
     var vx = 50;
     var vy = 0;
-    
-    function setVY(degree) {
-        
-    }
     
     function rotate(clockwise) {
         /*var currentY = $shuttle.offset().top;
@@ -42,28 +38,44 @@ function init(player) {
             queue: false,
             step: function (currentDeg) {
                 $shuttle.css('top', '+=' + currentDeg + 'px');
-                $shuttle.css({ WebkitTransform: 'rotate(' + currentDeg + 'deg)'});  
-                $shuttle.css({ '-moz-transform': 'rotate(' + currentDeg + 'deg)'}); 
+               // $shuttle.css({ WebkitTransform: 'rotate(' + currentDeg + 'deg)'});  
+               // $shuttle.css({ '-moz-transform': 'rotate(' + currentDeg + 'deg)'}); 
             }
         });
             }, 5);
         ship.updatePosition(0, vy);
     }    
     
+    function steer() {
+        clearTimeout(timer);
+        var velocity = 10;
+        var time = 0;
+        timer = setTimeout(function() {
+            //velocity = 1;
+            time += 1;
+            ship.updatePosition(0, velocity, time);
+            $shuttle.animate({
+                top: ship.position().y + 'px'
+            }, {
+                duration: 400,
+                queue: false,
+               /* step: function (t) {
+                    ship.updatePosition(0, velocity, t);
+                }*/
+            });
+        });
+    }
+    
     $(document).keydown(function (e) {
         if (e.which === 39 || e.which === 68) {
-           /* $('.planets').find('.planet').animate({
-                'left': '+=10px'
-            });*/
+           steer();
             
-            rotate(true);
+           // rotate(true);
         }
         else if (e.which === 37 || e.which === 65) {
-           /* $('.planets').find('.planet').animate({
-                'left': '-=10px'
-            });*/
-            
-            rotate(false);
+          
+            steer();
+            //rotate(false);
         }
     });
     
@@ -71,12 +83,6 @@ function init(player) {
         clearTimeout(timer);
     });
     
-    
-    $(document).click(function() {
-        clearTimeout(timer);
-    }, function() {
-       rotate();
-    });
     
     $planets.animate({
         left: '-' + generator.levelWidth() + 'px'
