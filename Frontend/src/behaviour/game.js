@@ -8,7 +8,6 @@ function init(player) {
     
     var $shuttle = $('.ship'), degree = 0, timer;
     ship.setPosition($('.ship').offset().left, $('.ship').offset().top);
-    alert(JSON.stringify(ship.position()));
     var $planets = $('.planets').find('.planet');
     var vx = 50;
     var vy = 200;
