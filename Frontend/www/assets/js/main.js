@@ -8,7 +8,6 @@ function init(player) {
     generator.generateLevel();
     
     var $shuttle = $('.ship'), degree = 0, timer;
-   // ship.setPosition(0.45 * $(document).innerWidth(), 0.45 * $(document).innerHeight());
     ship.setPosition($('.ship').offset().left, $('.ship').offset().top);
     alert(JSON.stringify(ship.position()));
     var $planets = $('.planets').find('.planet');
@@ -18,7 +17,6 @@ function init(player) {
     var a1 = 0;
     var time = 0;
     var pull = null;
-    var steering = false;
     
     function gameOver() {
         $shuttle.stop();
@@ -30,7 +28,6 @@ function init(player) {
     
     function inGravityFieldOf(x, y) {
         pull = null;
-       // alert(x + ', ' + y);
         generator.planets().forEach(function (p) {
             if (p.physics.insideGravityField(x, y))
                 pull = p;
@@ -55,7 +52,7 @@ function init(player) {
             $({prop: 0}).animate({
                 prop: 100
             }, {
-                duration: 200,
+                duration: 1000,
                 queue: false,
                 step: function (s) {
                         $shuttle.css({ WebkitTransform: 'rotate(' + deg + 'deg)'});  
@@ -68,7 +65,7 @@ function init(player) {
                             duration: 200,
                             queue: false
                         });
-                        a *= a;
+                        a += a;
                 }
             });
         });
@@ -165,30 +162,20 @@ function generatePlanet(limWidthLower, limWidth, limHeight, planets) {
         function newPlanet() {
             var x = Math.random() * limWidth + limWidthLower;
             var y = Math.random() * limHeight;
-            //var x = limWidth;
-           // var y = limHeight / 2;
             var g = Math.random();
-           // alert(x + ', ' + y);
             return cosmos.Planet(x, y, g);
         }
         
         function overlaps(planet, planets) {
             var over = false;
             planets.forEach(function (p) {
-                //alert(JSON.stringify(p));
                 if (planetsOverlap(p, planet))
                     over = true;
-               // alert(planetsOverlap(p, planet));
             });
             return over;
         }
         
         var planet = newPlanet();
-       // alert(overlaps(planet, planets));
-    /*    while (overlaps(planet, planets)) {
-            planet = newPlanet();   
-            //alert('iter');
-        }*/
         appendPlanetDiv(planet);
         planets.push(planet);   
    // }
@@ -207,7 +194,6 @@ function generateLevel() {
         generatePlanet(widthLower, widthHigher, levelHeight, planets);
         widthLower = planets[counter].physics.centerX + planets[counter++].physics.surfaceRadius;
         widthHigher = widthLower + offset;
-        //alert(widthHigher + ', ' + widthLower)
     }
 }
 
@@ -276,19 +262,6 @@ function Planet(edgeX, centerY, g) {
     
 }
 
-/*function randomPlanetDiv() {    
-    var fieldSize = fieldSizes[Math.floor(Math.random() * 3)];
-    var planetSize = planetSizes[Math.floor(Math.random() * 3)];
-    var planetColour = planetColours[Math.floor(Math.random() * 3)];
-    
-    var $elem = $(PLANET_TEMPLATE);
-    $elem.addClass(fieldSize);
-    $elem.find('.planet-surface').addClass(planetSize);
-    $elem.find('.planet-surface').addClass(planetColour);
-    
-    return $elem;
-}*/
-
 function createPlanet($elem) {
     var $gravity = $elem.find('.gravity-field');
     
@@ -332,14 +305,15 @@ exports.movePlanet = movePlanet;
 },{}],4:[function(require,module,exports){
 var posX = 0;
 var posY = 0;
-var bottom = $(document).innerHeight();
+var bottom = $(document).innerHeight() - 50;
 
 function updatePosition(x, vy, ya, t) {
-   // if (posY >= bottom || posY <= 0)
-     //   return;
     posX += x;
+    var newY = posY + vy*t + 0.5*ya*t*t;
+    if ((posY >= bottom || posY <= 0) && (newY >= bottom || newY <= 0))
+        return;
     //if (t !== 0) alert(x + ', ' + vy +', ' + t);
-    posY += vy*t + 0.5*ya*t*t;
+    posY = newY;
 }
 
 function setPosition(x, y) {
@@ -362,8 +336,6 @@ $(function() {
     var game = require('./behaviour/game');
     
     (function () {
-        var canvas = $('#gameCanvas');
-        //var ctx = canvas.getContext("2d");
         var player = {
             distance: 0
         };

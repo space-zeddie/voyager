@@ -47,19 +47,6 @@ function Planet(edgeX, centerY, g) {
     
 }
 
-/*function randomPlanetDiv() {    
-    var fieldSize = fieldSizes[Math.floor(Math.random() * 3)];
-    var planetSize = planetSizes[Math.floor(Math.random() * 3)];
-    var planetColour = planetColours[Math.floor(Math.random() * 3)];
-    
-    var $elem = $(PLANET_TEMPLATE);
-    $elem.addClass(fieldSize);
-    $elem.find('.planet-surface').addClass(planetSize);
-    $elem.find('.planet-surface').addClass(planetColour);
-    
-    return $elem;
-}*/
-
 function createPlanet($elem) {
     var $gravity = $elem.find('.gravity-field');
     

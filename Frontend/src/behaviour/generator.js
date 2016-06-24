@@ -37,30 +37,20 @@ function generatePlanet(limWidthLower, limWidth, limHeight, planets) {
         function newPlanet() {
             var x = Math.random() * limWidth + limWidthLower;
             var y = Math.random() * limHeight;
-            //var x = limWidth;
-           // var y = limHeight / 2;
             var g = Math.random();
-           // alert(x + ', ' + y);
             return cosmos.Planet(x, y, g);
         }
         
         function overlaps(planet, planets) {
             var over = false;
             planets.forEach(function (p) {
-                //alert(JSON.stringify(p));
                 if (planetsOverlap(p, planet))
                     over = true;
-               // alert(planetsOverlap(p, planet));
             });
             return over;
         }
         
         var planet = newPlanet();
-       // alert(overlaps(planet, planets));
-    /*    while (overlaps(planet, planets)) {
-            planet = newPlanet();   
-            //alert('iter');
-        }*/
         appendPlanetDiv(planet);
         planets.push(planet);   
    // }
@@ -79,7 +69,6 @@ function generateLevel() {
         generatePlanet(widthLower, widthHigher, levelHeight, planets);
         widthLower = planets[counter].physics.centerX + planets[counter++].physics.surfaceRadius;
         widthHigher = widthLower + offset;
-        //alert(widthHigher + ', ' + widthLower)
     }
 }
 

@@ -7,7 +7,6 @@ function init(player) {
     generator.generateLevel();
     
     var $shuttle = $('.ship'), degree = 0, timer;
-   // ship.setPosition(0.45 * $(document).innerWidth(), 0.45 * $(document).innerHeight());
     ship.setPosition($('.ship').offset().left, $('.ship').offset().top);
     alert(JSON.stringify(ship.position()));
     var $planets = $('.planets').find('.planet');
@@ -17,7 +16,6 @@ function init(player) {
     var a1 = 0;
     var time = 0;
     var pull = null;
-    var steering = false;
     
     function gameOver() {
         $shuttle.stop();
@@ -29,7 +27,6 @@ function init(player) {
     
     function inGravityFieldOf(x, y) {
         pull = null;
-       // alert(x + ', ' + y);
         generator.planets().forEach(function (p) {
             if (p.physics.insideGravityField(x, y))
                 pull = p;
@@ -54,7 +51,7 @@ function init(player) {
             $({prop: 0}).animate({
                 prop: 100
             }, {
-                duration: 200,
+                duration: 1000,
                 queue: false,
                 step: function (s) {
                         $shuttle.css({ WebkitTransform: 'rotate(' + deg + 'deg)'});  
@@ -67,7 +64,7 @@ function init(player) {
                             duration: 200,
                             queue: false
                         });
-                        a *= a;
+                        a += a;
                 }
             });
         });
