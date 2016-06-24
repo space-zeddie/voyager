@@ -12,8 +12,9 @@ function init(player) {
     alert(JSON.stringify(ship.position()));
     var $planets = $('.planets').find('.planet');
     var vx = 50;
-    var vy = 30;
+    var vy = 200;
     var a = 0;
+    var a1 = 0;
     var time = 0;
     var pull = null;
     var steering = false;
@@ -49,18 +50,24 @@ function init(player) {
             else velocity = -1;
             time += 1;
             
-            ship.updatePosition(0, velocity, a, time);  
-            $shuttle.animate({
-                top: ship.position().y + 'px'
+             
+            $({prop: 0}).animate({
+                prop: 100
             }, {
                 duration: 200,
                 queue: false,
                 step: function (s) {
-                    //if (deg > -30 && deg < 30) {
                         $shuttle.css({ WebkitTransform: 'rotate(' + deg + 'deg)'});  
                         $shuttle.css({ '-moz-transform': 'rotate(' + deg + 'deg)'}); 
                         deg += degInc;
-                  //  }
+                        ship.updatePosition(0, velocity, a + a1, time);
+                        $shuttle.animate({
+                            top: ship.position().y + 'px'
+                        }, {
+                            duration: 200,
+                            queue: false
+                        });
+                        a *= a;
                 }
             });
         });
@@ -68,12 +75,12 @@ function init(player) {
     
     $(document).keydown(function (e) {
         if (e.which === 39 || e.which === 68) {
-            a -= 0.2;
-           if (!steering) steer(false);
+            a1 -= 0.2;
+           steer(false);
         }
         else if (e.which === 37 || e.which === 65) {
-            a -= 0.2;
-            if (!steering) steer(true);
+            a1 -= 0.2;
+            steer(true);
         }
     });
     
@@ -102,17 +109,15 @@ function init(player) {
             inGravityFieldOf(steerX, steerY);
             
             if (pull) { 
-                a = pull.physics.g;
+                a1 = pull.physics.g;
                 if (steerY > pull.physics.centerY) {
-                    steering = true;
                     steer(false);
-                    steering = false;
                 }
-                else { steering = true; steer(true); steering = false; }
+                else { steer(true); }
                 if (pull.physics.collides(steerX, steerY))
                     gameOver();
             }
-            else a = 0;
+            else a1 = 0;
         },
         complete: gameOver 
     });
