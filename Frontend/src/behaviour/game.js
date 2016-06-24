@@ -51,7 +51,7 @@ function init(player) {
             $({prop: 0}).animate({
                 prop: 100
             }, {
-                duration: 1000,
+                duration: 200,
                 queue: false,
                 step: function (s) {
                         $shuttle.css({ WebkitTransform: 'rotate(' + deg + 'deg)'});  
@@ -83,7 +83,7 @@ function init(player) {
     
     $(document).keyup(function (e) {
         clearTimeout(timer);
-        time = 0;
+        time = 0;        
     });
     
     var initial = $planets.get(0).offsetLeft;
@@ -113,6 +113,8 @@ function init(player) {
                 else { steer(true); }
                 if (pull.physics.collides(steerX, steerY))
                     gameOver();
+                 
+
             }
             else a1 = 0;
         },
