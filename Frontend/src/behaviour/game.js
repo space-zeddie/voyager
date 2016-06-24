@@ -2,6 +2,7 @@ var ship = require('./ship');
 var generator = require('./generator');
 var cosmos = require('./planet');
 
+
 function init(player) {
     generator.generateLevel();
     
@@ -16,6 +17,14 @@ function init(player) {
     var time = 0;
     var pull = null;
     
+    function gameOver() {
+        $shuttle.stop();
+        $planets.stop();
+        alert('Game over!');
+        alert('You\'ve flown ' + player.distance + ' light years!');
+    }
+
+    
     function inGravityFieldOf(x, y) {
         pull = null;
        // alert(x + ', ' + y);
@@ -25,42 +34,7 @@ function init(player) {
         });
         return pull;
     }
-    
-    function rotate(clockwise) {
-        /*var currentY = $shuttle.offset().top;
-        if (currentY + vy >= generator.levelWidth() + 200 || currentY - vy <= 0) {
-            alert('nowhere to rotate');
-            $shuttle.animate(
-                {
-                    top: '45%',
-                    left: '45%'
-                }, {duration: 400, queue: false});
-            return;
-        }*/
-        if (clockwise)
-            vy = -degree;
-        else vy = degree;
-        clearTimeout(timer);
-            timer = setTimeout(function() {
-                degree += 0.5;// rotate();
-        
-       // $shuttle.css({ WebkitTransform: 'rotate(' + degree + 'deg)'});  
-       // $shuttle.css({ '-moz-transform': 'rotate(' + degree + 'deg)'});        
-        $shuttle.animate({
-            top: '+=' + vy + 'px'
-        }, {
-            duration: 400, 
-            queue: false,
-            step: function (currentDeg) {
-                $shuttle.css('top', '+=' + currentDeg + 'px');
-               // $shuttle.css({ WebkitTransform: 'rotate(' + currentDeg + 'deg)'});  
-               // $shuttle.css({ '-moz-transform': 'rotate(' + currentDeg + 'deg)'}); 
-            }
-        });
-            }, 5);
-        ship.updatePosition(0, vy);
-    }    
-    
+
     function steer(clockwise) {
         clearTimeout(timer);
         
@@ -74,7 +48,6 @@ function init(player) {
             else velocity = -1;
             time += 1;
             
-            //alert('time:' + time);
             ship.updatePosition(0, velocity, a, time);  
             $shuttle.animate({
                 top: ship.position().y + 'px'
@@ -131,8 +104,8 @@ function init(player) {
         step: function (currentX) {
             prevVel = velX;
             velX = - $planets.get(0).offsetLeft + initial;
-            //console.log(Math.abs(velX - prevVel));
             ship.setX(Math.abs(velX - prevVel));
+            player.distance += Math.abs(velX - prevVel);
             
            /// generator.planets().forEach(function (p) {
               //  cosmos.movePlanet(p, currentX, 0);
@@ -140,10 +113,14 @@ function init(player) {
             //alert(ship.position().x + ', ' + ship.position().y);
             inGravityFieldOf(ship.position().x + $shuttle.width(), ship.position().y + $shuttle.height()/2);
             
-            var a = 0;
-            if (pull){ a = pull.physics.g;
-            alert(JSON.stringify(pull));
-                     }
+            if (pull) { 
+                a = pull.physics.g;
+           // alert(JSON.stringify(pull));
+                steer();
+                if (pull.physics.collides(ship.position().x + $shuttle.width(), ship.position().y + $shuttle.height()/2))
+                    gameOver();
+            }
+            else a = 0;
           /*  ship.updatePosition(velX, vy, a, time);  
            $shuttle.animate({
                 top: ship.position().y + 'px'
@@ -157,7 +134,7 @@ function init(player) {
                 }
             });*/
         },
-        complete: function () { alert (ship.position().x + ', ' + ship.position().y); }
+        complete: gameOver 
     });
 }
 
