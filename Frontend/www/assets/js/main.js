@@ -13,6 +13,7 @@ function init(player) {
     var $planets = $('.planets').find('.planet');
     var vx = 50;
     var vy = 10;
+    var a = 0;
     var time = 0;
     var pull = null;
     
@@ -67,21 +68,27 @@ function init(player) {
         var velocity;
         //var time = 0;
         time = 0;
+        var deg = 0;
        // var pull = null;
         timer = setTimeout(function() {
-            if (clockwise) velocity = -1;
-            else velocity = 1;
+            if (clockwise) velocity = 1;
+            else velocity = -1;
             time += 1;
+            
             //alert('time:' + time);
-            ship.updatePosition(0, velocity, 0, time);  
+            ship.updatePosition(0, velocity, a, time);  
             $shuttle.animate({
                 top: ship.position().y + 'px'
             }, {
                 duration: 400,
                 queue: false,
-                step: function (deg) {
-                   // $shuttle.css({ WebkitTransform: 'rotate(' + deg + 'deg)'});  
-                   // $shuttle.css({ '-moz-transform': 'rotate(' + deg + 'deg)'});                        
+                step: function (s) {
+                    //if (deg > -30 && deg < 30) {
+                        $shuttle.css({ WebkitTransform: 'rotate(' + deg + 'deg)'});  
+                        $shuttle.css({ '-moz-transform': 'rotate(' + deg + 'deg)'}); 
+                        if (clockwise) deg += 0.5;
+                        else deg -= 0.5;
+                  //  }
                 }
             });
         });
@@ -112,7 +119,9 @@ function init(player) {
         time = 0;
     });
     
+    var initial = $planets.get(0).offsetLeft;
     var velX = generator.levelWidth() / 50000;
+    var prevVel = velX;
     // alert(velX);
     $planets.animate({
         left: '-=' + generator.levelWidth() + 'px'
@@ -121,15 +130,21 @@ function init(player) {
         duration: 50000, 
         queue: false,
         step: function (currentX) {
+            prevVel = velX;
+            velX = - $planets.get(0).offsetLeft + initial;
+            console.log(Math.abs(velX - prevVel));
+            ship.setX(Math.abs(velX - prevVel));
+            
            /// generator.planets().forEach(function (p) {
               //  cosmos.movePlanet(p, currentX, 0);
             //});
             //alert(ship.position().x + ', ' + ship.position().y);
-            /*inGravityFieldOf(ship.position().x, ship.position().y);
+            inGravityFieldOf(ship.position().x, ship.position().y);
+            
             var a = 0;
-            /*if (pull){ a = pull.physics.g;
+            if (pull){ a = pull.physics.g;
             alert(JSON.stringify(pull));
-                     }*/
+                     }
           /*  ship.updatePosition(velX, vy, a, time);  
            $shuttle.animate({
                 top: ship.position().y + 'px'
@@ -376,12 +391,15 @@ function setPosition(x, y) {
     posY = y;
 }
 
+function setX(x){posX += x;}
+
 function position() {
     return {x: posX, y: posY};
 }
 
 exports.updatePosition = updatePosition;
 exports.setPosition = setPosition;
+exports.setX = setX;
 exports.position = position;
 },{}],5:[function(require,module,exports){
 $(function() {

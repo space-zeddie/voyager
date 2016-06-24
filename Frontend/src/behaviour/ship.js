@@ -15,10 +15,13 @@ function setPosition(x, y) {
     posY = y;
 }
 
+function setX(x){posX += x;}
+
 function position() {
     return {x: posX, y: posY};
 }
 
 exports.updatePosition = updatePosition;
 exports.setPosition = setPosition;
+exports.setX = setX;
 exports.position = position;
