@@ -131,14 +131,14 @@ function init(player) {
         step: function (currentX) {
             prevVel = velX;
             velX = - $planets.get(0).offsetLeft + initial;
-            console.log(Math.abs(velX - prevVel));
+            //console.log(Math.abs(velX - prevVel));
             ship.setX(Math.abs(velX - prevVel));
             
            /// generator.planets().forEach(function (p) {
               //  cosmos.movePlanet(p, currentX, 0);
             //});
             //alert(ship.position().x + ', ' + ship.position().y);
-            inGravityFieldOf(ship.position().x, ship.position().y);
+            inGravityFieldOf(ship.position().x + $shuttle.width(), ship.position().y + $shuttle.height()/2);
             
             var a = 0;
             if (pull){ a = pull.physics.g;
