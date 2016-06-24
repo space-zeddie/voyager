@@ -74,11 +74,11 @@ function init(player) {
     }
     
     $(document).keydown(function (e) {
-        if (e.which === 39 || e.which === 68) {
+        if (e.which === 38 || e.which === 87) {
             a1 -= 0.2;
            steer(false);
         }
-        else if (e.which === 37 || e.which === 65) {
+        else if (e.which === 40 || e.which === 83) {
             a1 -= 0.2;
             steer(true);
         }
