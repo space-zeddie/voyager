@@ -12,10 +12,11 @@ function init(player) {
     alert(JSON.stringify(ship.position()));
     var $planets = $('.planets').find('.planet');
     var vx = 50;
-    var vy = 10;
+    var vy = 30;
     var a = 0;
     var time = 0;
     var pull = null;
+    var steering = false;
     
     function gameOver() {
         $shuttle.stop();
@@ -37,12 +38,12 @@ function init(player) {
 
     function steer(clockwise) {
         clearTimeout(timer);
-        
         var velocity;
-        //var time = 0;
         time = 0;
         var deg = 0;
-       // var pull = null;
+        var degInc = 0.5;
+        if (!clockwise) degInc = -0.5;
+        
         timer = setTimeout(function() {
             if (clockwise) velocity = 1;
             else velocity = -1;
@@ -52,37 +53,27 @@ function init(player) {
             $shuttle.animate({
                 top: ship.position().y + 'px'
             }, {
-                duration: 400,
+                duration: 200,
                 queue: false,
                 step: function (s) {
                     //if (deg > -30 && deg < 30) {
                         $shuttle.css({ WebkitTransform: 'rotate(' + deg + 'deg)'});  
                         $shuttle.css({ '-moz-transform': 'rotate(' + deg + 'deg)'}); 
-                        if (clockwise) deg += 0.5;
-                        else deg -= 0.5;
+                        deg += degInc;
                   //  }
                 }
             });
         });
-        
-            //alert(JSON.stringify(ship.position()));
     }
     
     $(document).keydown(function (e) {
         if (e.which === 39 || e.which === 68) {
-           // time = 0;
-           steer(false);
-           // time = 0;
-           // vy = 0;
-            
-           // rotate(true);
+            a -= 0.2;
+           if (!steering) steer(false);
         }
         else if (e.which === 37 || e.which === 65) {
-         // time = 0;
-            steer(true);
-          // time = 0;
-          //  vy = 0;
-            //rotate(false);
+            a -= 0.2;
+            if (!steering) steer(true);
         }
     });
     
@@ -94,7 +85,6 @@ function init(player) {
     var initial = $planets.get(0).offsetLeft;
     var velX = generator.levelWidth() / 50000;
     var prevVel = velX;
-    // alert(velX);
     $planets.animate({
         left: '-=' + generator.levelWidth() + 'px'
     }, 
@@ -107,32 +97,22 @@ function init(player) {
             ship.setX(Math.abs(velX - prevVel));
             player.distance += Math.abs(velX - prevVel);
             
-           /// generator.planets().forEach(function (p) {
-              //  cosmos.movePlanet(p, currentX, 0);
-            //});
-            //alert(ship.position().x + ', ' + ship.position().y);
-            inGravityFieldOf(ship.position().x + $shuttle.width(), ship.position().y + $shuttle.height()/2);
+            var steerX = ship.position().x + $shuttle.width();
+            var steerY = ship.position().y + $shuttle.height()/2;
+            inGravityFieldOf(steerX, steerY);
             
             if (pull) { 
                 a = pull.physics.g;
-           // alert(JSON.stringify(pull));
-                steer();
-                if (pull.physics.collides(ship.position().x + $shuttle.width(), ship.position().y + $shuttle.height()/2))
+                if (steerY > pull.physics.centerY) {
+                    steering = true;
+                    steer(false);
+                    steering = false;
+                }
+                else { steering = true; steer(true); steering = false; }
+                if (pull.physics.collides(steerX, steerY))
                     gameOver();
             }
             else a = 0;
-          /*  ship.updatePosition(velX, vy, a, time);  
-           $shuttle.animate({
-                top: ship.position().y + 'px'
-            }, {
-                duration: 50000,
-                queue: false,
-                step: function (deg) {
-                   // alert(ship.position().x);
-                   // $shuttle.css({ WebkitTransform: 'rotate(' + deg + 'deg)'});  
-                   // $shuttle.css({ '-moz-transform': 'rotate(' + deg + 'deg)'});                        
-                }
-            });*/
         },
         complete: gameOver 
     });

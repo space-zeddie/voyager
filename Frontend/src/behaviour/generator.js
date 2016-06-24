@@ -19,8 +19,6 @@ function generatePlanet(limWidthLower, limWidth, limHeight, planets) {
         var lim2 = planet2.physics.fieldRadius + planet1.physics.surfaceRadius;
         
         return (dist <= lim1 || dist <= lim2);
-        //alert(dist <= lim1);
-        //return (dist <= lim1);
     }
     
     function appendPlanetDiv(planet) {
@@ -42,6 +40,7 @@ function generatePlanet(limWidthLower, limWidth, limHeight, planets) {
             //var x = limWidth;
            // var y = limHeight / 2;
             var g = Math.random();
+           // alert(x + ', ' + y);
             return cosmos.Planet(x, y, g);
         }
         
@@ -70,23 +69,18 @@ function generatePlanet(limWidthLower, limWidth, limHeight, planets) {
 }
 
 function generateLevel() {
-    var offset = 100;//100;
-    var height = levelHeight;
-    var widthLower = $('.ship').offset().left;
+    var offset = 100;
+    var widthLower = $('.ship').offset().left + 500;
     var widthHigher = offset;
     var counter = 0;
     var limit = widthLower + levelWidth;
     
     while (widthLower <= limit) {
-        generatePlanet(widthLower, widthHigher, height, planets);
+        generatePlanet(widthLower, widthHigher, levelHeight, planets);
         widthLower = planets[counter].physics.centerX + planets[counter++].physics.surfaceRadius;
         widthHigher = widthLower + offset;
         //alert(widthHigher + ', ' + widthLower)
     }
-    
-    //generatePlanet(0, offset, $(document).innerHeight(), planets);
-   // var nextLim = planets[0].physics.centerX;
-   // generatePlanet(2*nextLim, 2*nextLim + offset, $(document).innerHeight(), planets);
 }
 
 function width() {
